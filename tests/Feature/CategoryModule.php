@@ -3,20 +3,25 @@
 namespace Tests\Feature;
 
 use App\Category;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CategoryModule extends TestCase
 {
-    /** @test */
+
 
     use RefreshDatabase;
 
+    /** @test */
+
     public function it_a_create_new_category()
     {
+
         $this->withoutExceptionHandling();
-        $this->postJson(route('categories.store'),[
+        $this->actingAs($this->createUser())
+            ->postJson(route('categories.store'),[
             'name' => 'Monitores'
         ])->assertStatus(200);
 
@@ -29,7 +34,8 @@ class CategoryModule extends TestCase
 
     public function it_a_create_new_category_required_name()
     {
-        $this->postJson(route('categories.store'),[])
+        $this->actingAs($this->createUser())
+            ->postJson(route('categories.store'),[])
             ->assertStatus(422)
             ->assertJsonStructure([
                 'message','errors' => ['name']
@@ -44,7 +50,8 @@ class CategoryModule extends TestCase
 
         $categoryCreated = factory(Category::class)->create(['name' => 'monitores']);
 
-        $this->putJson(route('categories.update', $categoryCreated->id), [
+        $this->actingAs($this->createUser())
+            ->putJson(route('categories.update', $categoryCreated->id), [
             'name' => 'Monitor'
         ])->assertStatus(200);
 
@@ -61,7 +68,8 @@ class CategoryModule extends TestCase
     public function it_update_a_category_required_a_exists_category()
     {
 
-        $this->putJson(route('categories.update', rand(1,10)), [
+        $this->actingAs($this->createUser())
+            ->putJson(route('categories.update', rand(1,10)), [
             'name' => 'Monitor'
         ])->assertStatus(404);
 
@@ -73,7 +81,8 @@ class CategoryModule extends TestCase
     {
         $categoryCreated = factory(Category::class)->create(['name' => 'monitores']);
 
-        $this->getJson(route('categories.show', $categoryCreated->id))
+        $this->actingAs($this->createUser())
+            ->getJson(route('categories.show', $categoryCreated->id))
             ->assertJsonStructure([
                 'success', 'data'
             ])
@@ -87,7 +96,8 @@ class CategoryModule extends TestCase
     {
         $categoryCreated = factory(Category::class)->create(['name' => 'monitores']);
 
-        $this->deleteJson(route('categories.destroy', $categoryCreated->id))
+        $this->actingAs($this->createUser())
+            ->deleteJson(route('categories.destroy', $categoryCreated->id))
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('categories', [
@@ -95,5 +105,10 @@ class CategoryModule extends TestCase
             'name' => 'monitores'
         ]);
 
+    }
+
+    public function createUser()
+    {
+        return factory(User::class)->create();
     }
 }
