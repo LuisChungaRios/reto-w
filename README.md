@@ -1,7 +1,8 @@
 ### Reto
 
 Especificaciones del proyecto
-Feature tests
+
+#### Feature tests
 El proyecto tiene 2 suit de feature test para validar las funcionalidades del producto y categoria.
 
 
