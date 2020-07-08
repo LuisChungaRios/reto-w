@@ -13,6 +13,9 @@
             <a href="#" class="nav-link">@yield('page','Dashboard')</a>
         </li>
     </ul>
-
+    <a href="" class="ml-auto" class="btn btn-outline-primary"  onclick="event.preventDefault(), document.getElementById('logoutFrm').submit()"> Cerrar sesión</a>
+    <form action="{{route('logout')}}" method="POST" id="logoutFrm" >
+        @csrf
+    </form>
 </nav>
 <!-- /.navbar -->

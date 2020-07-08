@@ -100,9 +100,10 @@ class CategoryModule extends TestCase
             ->deleteJson(route('categories.destroy', $categoryCreated->id))
             ->assertStatus(200);
 
-        $this->assertDatabaseMissing('categories', [
+        $this->assertDatabaseHas('categories', [
             'id' => $categoryCreated->id,
-            'name' => 'monitores'
+            'name' => 'monitores',
+            'active' => 0
         ]);
 
     }

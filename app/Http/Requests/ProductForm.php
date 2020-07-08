@@ -25,7 +25,7 @@ class ProductForm extends FormRequest
     {
         return [
             'name' => 'required',
-            'image' => 'nullable|dimensions:min_width=300,min_height=300',
+            'image' => 'nullable|sometimes|image|mimes:jpeg,bmp,png,jpg,svg|dimensions:min_width=300,min_height=300',
             'price' => 'required',
             'category_id' => 'required|exists:categories,id'
         ];

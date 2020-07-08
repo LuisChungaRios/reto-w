@@ -12,7 +12,7 @@ class CategoryController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $categories = Category::orderby('id','desc')->paginate(5);
+            $categories = Category::orderby('id','desc')->where('active',1)->paginate(5);
 
             return response()->json([
                 'pagination' => [
@@ -29,11 +29,20 @@ class CategoryController extends Controller
         return view('category');
     }
 
+    public function getAll()
+    {
+        return response()->json([
+            'sucess' => 'ok',
+            'data' => Category::orderby('id','desc')->where('active',1)->get()
+        ]);
+    }
+
 
     public function store(CategoryForm $request)
     {
         $category = new Category;
         $category->name = $request->name;
+        $category->description = $request->description;
         $category->save();
 
         return response()->json([
@@ -60,6 +69,7 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $category->name = $request->name;
+        $category->description = $request->description;
         $category->save();
 
         return response()->json([
@@ -70,7 +80,8 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        $category->delete();
+        $category->active = 0;
+        $category->save();
         return response()->json([
             'success' => 'ok'
         ]);

@@ -13,7 +13,7 @@ class ProductController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $products = Product::with('categories')->orderby('id','desc')->paginate(10);
+            $products = Product::with('category')->orderby('id','desc')->paginate(10);
 
             return response()->json([
                 'pagination' => [
@@ -35,16 +35,22 @@ class ProductController extends Controller
     {
         $product = new Product;
         $product->name = $request->name;
-        $product->description = $request->description;
+        $product->description = is_null($request->description)  || $request->description == 'null'? '' : $request->description;
         $product->price = $request->price;
         $product->discount = $request->discount;
         $product->category_id = $request->category_id;
 
-        if ($request->file('image')) {
-            Storage::disk('local')->put("/images/{$request->file('image')->getClientOriginalName()}",'Contents');
-        }
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
 
+            $name = Storage::disk('public')->put('images',$file);
+            $product->image = $name;
+        }
         $product->save();
+
+        return response()->json([
+            'success' => 'ok'
+        ]);
     }
 
 
@@ -58,20 +64,26 @@ class ProductController extends Controller
 
 
 
-    public function update(ProductForm $request, Product $product)
+    public function update(Product $product, ProductForm $request)
     {
+
         $product->name = $request->name;
-        $product->description = $request->description;
+        $product->description = is_null($request->description)  || $request->description == 'null'? '' : $request->description;
         $product->price = $request->price;
         $product->discount = $request->discount;
         $product->category_id = $request->category_id;
 
-        if ($request->file('image')) {
-            Storage::disk('local')->put("/images/{$request->file('image')->getClientOriginalName()}",'Contents');
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+
+            $name = Storage::disk('public')->put('images',$file);
+            $product->image = $name;
         }
 
         $product->save();
-
+        return response()->json([
+            'success' => 'ok'
+        ]);
     }
 
 

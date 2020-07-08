@@ -75,11 +75,6 @@
                 </div>
             </form>
 
-            <!-- /.social-auth-links -->
-
-            <p class="mb-1">
-                <a href="/">I forgot my password</a>
-            </p>
 
         </div>
         <!-- /.login-card-body -->
